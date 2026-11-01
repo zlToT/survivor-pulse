@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>幸存者 · 脉冲</title>
+    <script type="module" src="./assets/index.js"></script>
+    <link rel="stylesheet" href="./assets/index.css">
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+      <canvas id="fx"></canvas>
+
+      <!-- 左上：状态卡 -->
+      <div id="hudL">
+        <div class="hrow"><span>生命</span><div class="track"><i id="hpFill" class="hp"></i></div><b id="hpTxt">5/5</b></div>
+        <div class="hrow"><span>冲刺</span><div class="track"><i id="dashFill" class="dash"></i></div><b id="dashTxt">就绪</b></div>
+        <div class="hrow"><span>经验</span><div class="track"><i id="xpFill" class="xp"></i></div><b id="lvTxt">LV 1</b></div>
+      </div>
+
+      <!-- 顶部中央：计时 -->
+      <div id="hudT">
+        <div id="timer">15:00</div>
+        <div id="stageTxt">挑战模式 · 引力井</div>
+      </div>
+
+      <div id="bossWrap">
+        <div id="bossName"></div>
+        <div id="bossTrack"><div id="bossFill"></div></div>
+      </div>
+
+      <!-- 左侧：武器 / 技能 / 被动 -->
+      <div id="hudW">
+        <div class="lt">武器 <b id="wpnCnt">1 / 3</b></div>
+        <div id="wpnbar"></div>
+        <div class="lt">技能 <b id="sklCnt">0</b></div>
+        <div id="sklbar"></div>
+        <div class="lt">被动 <b id="pasCnt">0 / 6</b></div>
+        <div id="pasbar"></div>
+      </div>
+
+      <!-- 右上：小地图 -->
+      <div id="minimap"><canvas id="mm" width="88" height="88"></canvas></div>
+
+      <!-- 右下：统计 -->
+      <div id="hudBR">
+        <div class="brrow"><b id="killTxt">0</b><span>击杀</span><i></i><b id="coinTxt">0</b><span>金币</span></div>
+        <div id="dmgChip">伤害数字：开</div>
+      </div>
+
+      <div id="joy"><i></i></div>
+      <button id="dashBtn">»</button>
+
+      <button id="gmBtn" title="GM 调试">GM</button>
+      <div id="gmPanel">
+        <div class="gm-head"><span>GM · 调试面板</span><button id="gmClose">×</button></div>
+        <div class="gm-body" id="gmBody"></div>
+      </div>
+      <div id="gmStats"></div>
+
+      <button id="pauseBtn" class="icon-btn" title="暂停">‖</button>
+
+      <div id="overlay">
+        <div id="hint" class="float">WASD / 方向键移动 ｜ 空格 / 右键冲刺 ｜ 手机：左侧摇杆 + 右下冲刺</div>
+        <div id="coinChip" class="float"><span>持有金币</span><b>◇ 0</b></div>
+        <div id="panel"></div>
+      </div>
+
+  </body>
+</html>
+
+
