@@ -1,0 +1,2747 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      background: #06070d;
+      color: #cfe3f7;
+      font-family: "Bahnschrift", "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      user-select: none;
+    }
+
+    #c,
+    #fx {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: block;
+      touch-action: none;
+    }
+
+    #c {
+      z-index: 1;
+    }
+
+    #fx {
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ===== 顶部 HUD ===== */
+    #timer {
+      font-size: 21px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 16px rgba(90, 200, 255, .6);
+    }
+
+    /* ===== Boss 血条 ===== */
+    #bossWrap {
+      position: fixed;
+      z-index: 10;
+      top: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(520px, 62vw);
+      display: none;
+      pointer-events: none;
+    }
+
+    #bossName {
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: #ff9ab3;
+      margin-bottom: 3px;
+      text-shadow: 0 0 8px rgba(255, 60, 110, .7);
+    }
+
+    #bossTrack {
+      height: 9px;
+      border-radius: 5px;
+      background: rgba(255, 80, 120, .12);
+      border: 1px solid rgba(255, 90, 130, .45);
+      overflow: hidden;
+    }
+
+    #bossFill {
+      height: 100%;
+      width: 100%;
+      background: #ff5b7f;
+      box-shadow: 0 0 14px rgba(255, 91, 127, .8);
+    }
+
+    #wpnbar {
+      display: flex;
+      gap: 6px;
+    }
+
+    #wpnbar div {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(20, 34, 54, .78);
+      border: 1px solid rgba(110, 170, 230, .32);
+      color: #b9d4ec;
+    }
+
+    #wpnbar div svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* 进化武器：颜色不变，左下角加彩色 ★，右下角照常显示等级 */
+    #wpnbar div .sv {
+      position: absolute;
+      left: 2px;
+      bottom: -1px;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(90deg, #ff5f6d, #ffc371, #7ef7c8, #4fc3ff, #b18cff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 4px rgba(255, 200, 150, .8));
+      pointer-events: none;
+    }
+
+    #wpnbar div em {
+      position: absolute;
+      right: 2px;
+      bottom: -1px;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 700;
+      color: inherit;
+      opacity: .92;
+      text-shadow: 0 0 6px rgba(0, 0, 0, .9);
+    }
+
+    /* ===== 局内 HUD：左上状态卡 ===== */
+    #hudL {
+      position: fixed;
+      z-index: 10;
+      top: 12px;
+      left: 12px;
+      width: 306px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(10, 18, 32, .55);
+      border: 1px solid rgba(110, 170, 230, .16);
+      pointer-events: none;
+    }
+
+    #hudL .hrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #91a9c1;
+    }
+
+    #hudL .hrow > span {
+      width: 26px;
+      flex: none;
+    }
+
+    #hudL .track {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 60px;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, .07);
+      overflow: hidden;
+    }
+
+    #hudL .track > i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-radius: 4px;
+      transition: width .1s linear;
+    }
+
+    #hudL .track > i.hp {
+      background: linear-gradient(90deg, #ff4f76, #ff97ae);
+      box-shadow: 0 0 10px rgba(255, 79, 118, .6);
+    }
+
+    #hudL .track > i.dash {
+      background: linear-gradient(90deg, #36b6ff, #7ee6ff);
+      box-shadow: 0 0 10px rgba(54, 182, 255, .55);
+    }
+
+    #hudL .track > i.xp {
+      background: linear-gradient(90deg, #9a63ff, #c9a7ff);
+      box-shadow: 0 0 10px rgba(154, 99, 255, .55);
+    }
+
+    #hudL .hrow > b {
+      flex: none;
+      min-width: 62px;
+      text-align: right;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #dceaf8;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== 顶部中央计时 ===== */
+    #hudT {
+      position: fixed;
+      z-index: 10;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #hudT #timer {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 20px rgba(90, 200, 255, .6);
+    }
+
+    #stageTxt {
+      margin-top: 1px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #8fb6d8;
+    }
+
+    /* ===== 左侧武器 / 强化 ===== */
+    #hudW {
+      position: fixed;
+      z-index: 10;
+      left: 12px;
+      top: 136px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      pointer-events: none;
+    }
+
+    #hudW .lt {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #8098b0;
+    }
+
+    #hudW .lt b {
+      color: #d6e8fa;
+      font-weight: 700;
+    }
+
+    #pasbar {
+      display: flex;
+      gap: 6px;
+    }
+
+    #pasbar div {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(20, 34, 54, .72);
+      border: 1px solid rgba(110, 170, 230, .26);
+      color: #b9d4ec;
+    }
+
+    #pasbar div svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    #pasbar div em {
+      position: absolute;
+      right: 1px;
+      bottom: -2px;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 700;
+      color: inherit;
+      opacity: .92;
+      text-shadow: 0 0 6px #000;
+    }
+
+    #sklbar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      max-width: 190px;
+    }
+
+    #sklbar div {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(20, 34, 54, .72);
+      border: 1px solid rgba(110, 170, 230, .26);
+      color: #9fe8ff;
+    }
+
+    #sklbar div.mount {
+      border-style: dashed;
+      border-width: 1px;
+    }
+
+    /* 专属技能但当前没持有对应武器：不触发，图标压暗 */
+    #sklbar div.other {
+      opacity: .42;
+      filter: grayscale(.45);
+    }
+
+    #sklbar div svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    #sklbar div em {
+      position: absolute;
+      right: 1px;
+      bottom: -2px;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 700;
+      color: inherit;
+      opacity: .92;
+      text-shadow: 0 0 6px #000;
+    }
+
+    /* ===== 右上小地图 ===== */    #minimap {
+      position: fixed;
+      z-index: 10;
+      top: 56px;
+      right: 12px;
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 24px rgba(26, 84, 150, .5);
+    }
+
+    #mm {
+      display: block;
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+    }
+
+    /* ===== 右下统计 ===== */
+    #hudBR {
+      position: fixed;
+      z-index: 10;
+      right: 12px;
+      bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    #hudBR .brrow {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #93aabf;
+    }
+
+    #hudBR .brrow b {
+      font-size: 17px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #fff;
+    }
+
+    #hudBR .brrow b#killTxt {
+      color: #ffd3de;
+    }
+
+    #hudBR .brrow b#coinTxt {
+      color: #ffd76a;
+    }
+
+    #hudBR .brrow i {
+      width: 1px;
+      height: 11px;
+      background: rgba(140, 190, 240, .3);
+    }
+
+    #dmgChip {
+      font-size: 10.5px;
+      letter-spacing: 1px;
+      color: #7d95ad;
+      background: rgba(12, 22, 38, .58);
+      border: 1px solid rgba(110, 170, 230, .16);
+      border-radius: 7px;
+      padding: 3px 8px;
+    }
+
+    /* ===== 虚拟摇杆 ===== */
+    #joy {
+      position: fixed;
+      z-index: 9;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      pointer-events: none;
+      border: 2px solid rgba(130, 200, 255, .32);
+      background: radial-gradient(circle, rgba(80, 160, 255, .1), transparent 70%);
+      display: none;
+      margin: -58px 0 0 -58px;
+    }
+
+    #joy i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 46px;
+      height: 46px;
+      margin: 0;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(120, 210, 255, .5);
+      box-shadow: 0 0 20px rgba(120, 210, 255, .85);
+    }
+
+    /* ===== 图标按钮 ===== */
+    .icon-btn {
+      position: fixed;
+      z-index: 20;
+      top: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(120, 180, 240, .26);
+      background: rgba(16, 26, 42, .74);
+      color: #a9c8e4;
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      backdrop-filter: blur(6px);
+      transition: .15s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(32, 56, 92, .92);
+      color: #dff;
+    }
+
+    #pauseBtn {
+      right: 10px;
+    }
+
+    /* ===== 遮罩面板 ===== */
+    #overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: radial-gradient(circle at 50% 42%, rgba(8, 20, 40, .88), rgba(3, 5, 12, .97));
+    }
+
+    /* 标题页 / 局外强化：纯色菜单底，不出现任何网格 */
+    #overlay.ttl,
+    #overlay.shop {
+      background-color: #06070d;
+      background-image: radial-gradient(circle at 50% 26%, rgba(26, 72, 140, .26), rgba(6, 7, 13, 0) 58%);
+    }
+
+    /* 面板打开时隐藏局内 HUD，避免盖在遮罩上 */
+    body.panel-open #hudL,
+    body.panel-open #hudT,
+    body.panel-open #hudW,
+    body.panel-open #hudBR,
+    body.panel-open #minimap,
+    body.panel-open #bossWrap,
+    body.panel-open #joy,
+    body.panel-open #dashBtn,
+    body.panel-open .icon-btn {
+      display: none !important;
+    }
+
+    /* ===== 固定浮层：不随面板内容滚动 ===== */
+    #overlay > .float {
+      position: absolute;
+      z-index: 4;
+      display: none;
+      pointer-events: none;
+    }
+
+    #hint {
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      justify-content: center;
+      font-size: 12.5px;
+      letter-spacing: 1.6px;
+      color: #5f7488;
+      text-align: center;
+    }
+
+    #coinChip {
+      top: 18px;
+      right: 22px;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      letter-spacing: 1.4px;
+      color: #93aec6;
+      background: rgba(14, 26, 44, .94);
+      border: 1px solid rgba(90, 150, 220, .32);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .5);
+    }
+
+    #coinChip b {
+      font-size: 15px;
+      letter-spacing: 1px;
+      color: #ffd76a;
+    }
+
+    /* 标题页：底部给提示条留位置 */
+    #overlay.ttl #panel {
+      padding-top: 4px;
+      padding-bottom: 78px;
+    }
+
+    /* 商店：给右上角金币条留位置 */
+    #overlay.shop #panel {
+      padding-top: 44px;
+    }
+
+    /* 升级/宝箱：标题与卡片拉开距离 */
+    #overlay.pick {
+      background: radial-gradient(circle at 50% 42%, rgba(7, 15, 30, .93), rgba(3, 5, 12, .975));
+    }
+
+    #overlay.pick #panel {
+      max-width: 1000px;
+    }
+
+    #overlay.pick #panel h1 {
+      margin-bottom: 22px;
+    }
+
+    #overlay.pick .picks {
+      margin-top: 34px;
+      /* 1~3 张卡都居中，数量少时不会被挤到左边 */
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    #overlay.pick .picks > .pickc {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 330px;
+    }
+
+    /* 宝箱有 4 个选项（局外「宝箱密钥」）：2×2 摆，避免卡片被压扁 */
+    #overlay.pick .picks.four {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #overlay.pick .picks.four > .pickc {
+      flex: none;
+      max-width: none;
+    }
+
+    /* 暂停/结算：标题、数据、按钮之间拉开距离 */
+    #overlay.wide {
+      background: radial-gradient(circle at 50% 42%, rgba(7, 15, 30, .94), rgba(3, 5, 12, .99));
+    }
+
+    #overlay.wide #panel h1 {
+      margin-bottom: 44px;
+    }
+
+    #overlay.wide .stat {
+      width: 340px;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 14px 6px;
+      font-size: 16px;
+    }
+
+    /* 与上面 .stat 行同宽（340px），不然两按钮会比数据行宽一截 */
+    #overlay.wide .btnrow {
+      width: 340px;
+      max-width: 100%;
+      margin: 46px auto 0;
+      gap: 18px;
+    }
+
+    #overlay.wide .btnrow .mbtn {
+      max-width: none;
+    }
+
+    #panel {
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 4px 6px 18px;
+      text-align: center;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(90, 180, 255, .7) rgba(20, 36, 60, .5);
+    }
+
+    #panel::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    #panel::-webkit-scrollbar-track {
+      background: rgba(16, 30, 50, .55);
+      border-radius: 5px;
+    }
+
+    #panel::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background: linear-gradient(180deg, #6cd6ff, #2a7fd4);
+      border: 1px solid rgba(10, 20, 34, .8);
+      box-shadow: 0 0 8px rgba(90, 200, 255, .55);
+    }
+
+    #panel::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #9be8ff, #4a9de0);
+    }
+
+    #panel h1 {
+      font-size: 34px;
+      letter-spacing: 12px;
+      color: #eaf7ff;
+      margin: 8px 0 12px;
+      font-weight: 800;
+      text-shadow: 0 0 26px rgba(80, 180, 255, .45);
+    }
+
+    #panel h2 {
+      font-size: 16px;
+      letter-spacing: 4px;
+      color: #7fb6e6;
+      margin: 22px 0 12px;
+      font-weight: 600;
+    }
+
+    #panel p {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #8fa8c0;
+    }
+
+    #panel b {
+      color: #ffd76a;
+      font-weight: 600;
+    }
+
+    #panel .pickc .own {
+      color: #2a1c02;
+      font-weight: 800;
+      text-shadow: none;
+    }
+
+    /* ===== 面板按钮 ===== */
+    .mbtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 54px;
+      margin: 12px 0 0;
+      padding: 15px 22px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      color: #eaf7ff;
+      cursor: pointer;
+      border-radius: 12px;
+      border: 1px solid rgba(120, 200, 255, .55);
+      background: linear-gradient(180deg, rgba(58, 132, 214, .92), rgba(24, 70, 132, .96));
+      box-shadow: inset 0 1px 0 rgba(180, 225, 255, .3), 0 8px 22px rgba(20, 90, 180, .32);
+      transition: transform .12s, box-shadow .15s, filter .15s;
+    }
+
+    .mbtn:hover {
+      filter: brightness(1.16);
+      transform: translateY(-1px);
+      box-shadow: inset 0 1px 0 rgba(200, 235, 255, .4), 0 10px 26px rgba(40, 140, 255, .45);
+    }
+
+    .mbtn:active {
+      transform: translateY(1px) scale(.995);
+      filter: brightness(.95);
+    }
+
+    .mbtn.alt {
+      background: linear-gradient(180deg, rgba(32, 52, 80, .92), rgba(15, 25, 42, .96));
+      border-color: rgba(120, 180, 240, .34);
+      color: #a9c8e4;
+      box-shadow: inset 0 1px 0 rgba(150, 200, 240, .12);
+      letter-spacing: 4px;
+    }
+
+    .mbtn.alt:hover {
+      filter: brightness(1.32);
+      border-color: rgba(150, 205, 255, .55);
+    }
+
+    .mbtn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      filter: none;
+      transform: none;
+    }
+
+    .btnrow {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .btnrow .mbtn {
+      margin: 0;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    /* 独立主按钮：最宽 200px 居中 */
+    #panel > .mbtn,
+    .titlebox > .mbtn {
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      font-size: 14px;
+      letter-spacing: 2px;
+      padding: 9px 22px;
+      margin: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(30, 70, 120, .55);
+      color: #bfe6ff;
+      border: 1px solid rgba(90, 180, 255, .42);
+      transition: .16s;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      background: rgba(45, 110, 180, .82);
+      box-shadow: 0 0 18px rgba(60, 160, 255, .45);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border-color: rgba(120, 160, 200, .26);
+      color: #8fa8c0;
+    }
+
+    .btn:disabled {
+      opacity: .32;
+      cursor: not-allowed;
+    }
+
+    .btn.warn {
+      border-color: rgba(255, 110, 130, .5);
+      color: #ffb0be;
+      background: rgba(120, 30, 50, .32);
+    }
+
+    .card {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      padding: 11px 14px;
+      border-radius: 11px;
+      background: rgba(22, 40, 66, .66);
+      border: 1px solid rgba(90, 170, 255, .28);
+      cursor: pointer;
+      transition: .14s;
+      font-family: inherit;
+      color: inherit;
+    }
+
+    .card:hover {
+      background: rgba(34, 68, 110, .86);
+      border-color: #4fc3ff;
+      transform: translateX(3px);
+    }
+
+    .card .nm {
+      color: #d8f2ff;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .card .ds {
+      color: #8fa8c0;
+      font-size: 11.5px;
+      margin-top: 3px;
+      line-height: 1.55;
+    }
+
+    .card .lv {
+      float: right;
+      color: #7fd4ff;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .card .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      background: rgba(255, 215, 106, .14);
+      color: #ffd76a;
+      border: 1px solid rgba(255, 215, 106, .32);
+      font-weight: 400;
+    }
+
+    .card.evo {
+      border-color: rgba(255, 215, 106, .55);
+      background: rgba(58, 46, 18, .5);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      background: rgba(18, 30, 50, .72);
+      border: 1px solid rgba(90, 140, 200, .22);
+      text-align: left;
+    }
+
+    .row .info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .row .nm {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: #cfe6f8;
+    }
+
+    .row .nm em {
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 400;
+      color: #7fd4ff;
+      margin-left: 6px;
+    }
+
+    .row .ds {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #7d95ad;
+      margin-top: 5px;
+    }
+
+    .row .btn {
+      font-size: 12px;
+      padding: 6px 13px;
+      margin: 0;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 4px;
+      font-size: 15px;
+      color: #93aec6;
+      border-bottom: 1px dashed rgba(90, 130, 180, .16);
+    }
+
+    .stat b {
+      color: #ffd76a;
+      font-weight: 600;
+    }
+
+    /* 结算行的历史最佳小字 */
+    .stat em {
+      margin-left: 8px;
+      font-size: 11.5px;
+      font-style: normal;
+      letter-spacing: .3px;
+      color: #6f879c;
+    }
+
+    .stat em.hot {
+      color: #ffd76a;
+    }
+
+    .grid6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .grid6 div {
+      display: grid;
+      place-items: center;
+      padding: 7px 1px;
+      border-radius: 9px;
+      background: rgba(24, 38, 60, .7);
+      border: 1px solid rgba(110, 170, 230, .26);
+      font-size: 17px;
+      color: #cfe6f8;
+    }
+
+    .grid6 div em {
+      font-size: 9.5px;
+      font-style: normal;
+      color: #8fe3ff;
+      margin-top: 2px;
+    }
+
+    #panel h1.sm {
+      font-size: 27px;
+      letter-spacing: 7px;
+    }
+
+    .sub {
+      font-size: 14px !important;
+      letter-spacing: 1px;
+      color: #7d95ad !important;
+      margin-bottom: 4px !important;
+    }
+
+    .tip {
+      font-size: 12.5px !important;
+      letter-spacing: .5px;
+      color: #5f7488 !important;
+      margin-top: 22px !important;
+    }
+
+    .warn {
+      font-size: 12.5px !important;
+      color: #ff8b9c !important;
+      margin: 14px 0 0 !important;
+    }
+
+    .ghost {
+      background: transparent !important;
+      border: 1px solid rgba(120, 180, 240, .3) !important;
+      color: #8fb8dc !important;
+    }
+
+    .ico {
+      width: 40px;
+      height: 40px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: rgba(28, 46, 74, .85);
+      border: 1px solid rgba(110, 170, 230, .22);
+      color: #9fe8ff;
+    }
+
+    .ico svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .chars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 0 4px;
+    }
+
+    .char {
+      padding: 20px 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(90, 150, 220, .28);
+      background: rgba(16, 28, 48, .72);
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .char:hover {
+      border-color: rgba(120, 200, 255, .55);
+      background: rgba(22, 40, 66, .85);
+    }
+
+    .char.sel {
+      border-color: #6ce0ff;
+      background: rgba(24, 58, 96, .85);
+      box-shadow: 0 0 22px rgba(90, 200, 255, .3);
+    }
+
+    .char.lock {
+      opacity: .62;
+    }
+
+    .char .ci {
+      color: #8fe3ff;
+      line-height: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .char .ci svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .char .cn {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #dff2ff;
+      margin-top: 12px;
+    }
+
+    .char .cw {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      margin-top: 9px;
+    }
+
+    /* 角色特质：常驻被动，和武器无关 */
+    .char .ct {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      border: 1px solid currentColor;
+      opacity: .92;
+    }
+
+    .char .cd {
+      font-size: 12px;
+      color: #7d95ad;
+      line-height: 1.6;
+      margin-top: 8px;
+      min-height: 44px;
+    }
+
+    .char .cc {
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: #ffd76a;
+      margin-top: 10px;
+    }
+
+    .row.pick {
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .row.pick:hover {
+      background: rgba(30, 60, 100, .9);
+      border-color: rgba(120, 200, 255, .6);
+    }
+
+    .row.maxed {
+      opacity: .48;
+    }
+
+    .row.pick.evo {
+      border-color: rgba(255, 215, 106, .45);
+      background: rgba(48, 40, 20, .5);
+    }
+
+    /* ===== 升级/宝箱三选一：三列卡片 ===== */
+    .picks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 26px;
+    }
+
+    .pickc {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 30px 18px 20px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(20, 36, 60, .92), rgba(10, 18, 32, .94));
+      border: 1px solid rgba(96, 156, 226, .24);
+      cursor: pointer;
+      transition: border-color .15s, background .15s, transform .15s, box-shadow .15s;
+    }
+
+    .pickc:hover {
+      border-color: #6ce0ff;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(20, 90, 180, .34);
+    }
+
+    .pickc.evo {
+      border-color: rgba(255, 215, 106, .42);
+      background: linear-gradient(180deg, rgba(38, 30, 12, .55), rgba(14, 12, 8, .94));
+    }
+
+    /* 满级卡：整体呼吸 + 底部冒火 */
+    .pickc.maxed {
+      animation: cardBreath 2.4s ease-in-out infinite;
+    }
+
+    @keyframes cardBreath {
+      0%, 100% {
+        box-shadow: 0 0 0 1px rgba(255, 200, 90, .14), 0 10px 30px -20px rgba(255, 160, 40, .55);
+        border-color: rgba(255, 176, 64, .34);
+      }
+      50% {
+        box-shadow: 0 0 0 2px rgba(255, 214, 106, .5), 0 18px 44px -14px rgba(255, 140, 30, .85);
+        border-color: rgba(255, 196, 96, .78);
+      }
+    }
+
+    .pickc .fire {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 64px;
+      pointer-events: none;
+      border-radius: 0 0 15px 15px;
+      overflow: hidden;
+      z-index: 1;
+      -webkit-mask-image: linear-gradient(to top, #000 34%, rgba(0, 0, 0, .45) 66%, transparent 100%);
+      mask-image: linear-gradient(to top, #000 34%, rgba(0, 0, 0, .45) 66%, transparent 100%);
+    }
+
+    .pickc .fire i {
+      position: absolute;
+      bottom: -22px;
+      width: 34%;
+      height: 62px;
+      border-radius: 50% 50% 42% 42% / 62% 62% 38% 38%;
+      filter: blur(11px);
+      background: radial-gradient(circle at 50% 74%, rgba(255, 226, 150, .95), rgba(255, 138, 34, .72) 42%, rgba(255, 62, 0, 0) 76%);
+      animation: fireUp 1.4s ease-in-out infinite;
+    }
+
+    .pickc .fire i:nth-child(1) { left: 2%; animation-delay: 0s; }
+    .pickc .fire i:nth-child(2) { left: 33%; animation-delay: .3s; height: 74px; width: 30%; }
+    .pickc .fire i:nth-child(3) { left: 65%; animation-delay: .62s; height: 58px; }
+
+    @keyframes fireUp {
+      0%, 100% { transform: translateY(4px) scaleX(.92) scaleY(.8) rotate(-3deg); opacity: .68; }
+      40% { transform: translateY(-9px) scaleX(1.1) scaleY(1.14) rotate(2deg); opacity: 1; }
+      70% { transform: translateY(-4px) scaleX(1.04) scaleY(.96) rotate(-1deg); opacity: .86; }
+    }
+
+    /* 角标 / 技能标签轻微呼吸 */
+    .badge.new,
+    .badge.max {
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); opacity: .9; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    /* 图标块 */
+    .pickc .ico {
+      width: 82px;
+      height: 82px;
+      border-radius: 19px;
+      margin: 4px 0 16px;
+      border-width: 1.5px;
+      box-shadow: 0 0 40px -8px currentColor, inset 0 0 26px -14px currentColor;
+    }
+
+    .pickc .ico svg {
+      width: 37px;
+      height: 37px;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    /* [旧值 → 新值] 数值行 */
+    .pickc .stat {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2px 8px;
+      font-size: 11.5px;
+      line-height: 1.8;
+      letter-spacing: .3px;
+      text-align: center;
+      color: #8397ab;
+      margin-bottom: 10px;
+    }
+
+    .pickc .stat span {
+      white-space: nowrap;
+    }
+
+    .pickc .stat span + span::before {
+      content: "·";
+      color: #4e637a;
+      margin-right: 6px;
+    }
+
+    .pickc .stat b {
+      color: #dff1ff;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pickc .stat s {
+      text-decoration: none;
+      color: #4e637a;
+      margin: 0 2px;
+    }
+
+    .pickc .pn {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #dff2ff;
+    }
+
+    .pickc .pt {
+      margin-top: 3px;
+      font-size: 10.5px;
+      letter-spacing: 2px;
+      color: #7d95ad;
+    }
+
+    /* 没拿到对应武器时，专属技能只是等级，不会触发 */
+    .pickc .needw {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      letter-spacing: .5px;
+      color: #ffb27d;
+    }
+
+    .pickc .pl {
+      font-size: 11.5px;
+      letter-spacing: 1.5px;
+      color: #7fd4ff;
+    }
+
+    .pickc .pd {
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.75;
+      text-align: center;
+      color: #9db3c7;
+      min-height: 44px;
+    }
+
+    /* 等级进度：五格（武器 / 技能 / 被动统一，颜色跟随卡片） */
+    .pickc .pips {
+      position: relative;
+      z-index: 2;
+      margin-top: auto;
+      padding-top: 16px;
+      justify-content: center;
+    }
+
+    .pickc .pips i {
+      width: 18px;
+      height: 5px;
+      border-radius: 3px;
+      transform: none;
+      background: rgba(180, 196, 214, .2);
+    }
+
+    .pickc .pips i.on {
+      background: currentColor;
+      box-shadow: 0 0 10px -1px currentColor;
+    }
+
+    /* 本次将要拿到的那一格 */
+    .pickc .pips i.gain {
+      background: rgba(255, 255, 255, .2);
+      box-shadow: inset 0 0 0 1px currentColor, 0 0 10px -2px currentColor;
+      animation: gainPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes gainPulse {
+      0%, 100% { opacity: .5; }
+      50% { opacity: 1; }
+    }
+
+    /* 刷新按钮 */
+    .refbtn {
+      display: block;
+      margin: 26px auto 0;
+      padding: 12px 30px;
+      border-radius: 11px;
+      font: inherit;
+      font-size: 13.5px;
+      letter-spacing: 2px;
+      color: #bcd6ee;
+      background: rgba(20, 36, 58, .82);
+      border: 1px solid rgba(110, 170, 230, .3);
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+
+    .refbtn:hover:not([disabled]) {
+      border-color: #6ce0ff;
+      color: #eaf7ff;
+      background: rgba(28, 52, 84, .9);
+    }
+
+    .refbtn[disabled] {
+      opacity: .38;
+      cursor: default;
+    }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      padding: 2px 8px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      border: 1px solid;
+      z-index: 2;
+    }
+
+    /* 技能卡左上角：所属武器 + 专属 */
+    .pickc .own {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      padding: 3px 9px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: #241a04;
+      background: linear-gradient(180deg, #ffe08a, #f0b64a);
+      box-shadow: 0 0 16px -4px rgba(255, 215, 106, .9);
+      z-index: 2;
+    }
+
+    /* 武器 / 技能卡的等级行（无限流没有等级点） */
+    .pickc .lvline {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #7fd4ff;
+    }
+
+    .badge.new {
+      color: #ffd76a;
+      border-color: rgba(255, 215, 106, .6);
+      background: rgba(58, 44, 10, .96);
+      box-shadow: 0 0 16px rgba(255, 215, 106, .5);
+    }
+
+    .badge.max {
+      color: #ff8b9c;
+      border-color: rgba(255, 107, 129, .6);
+      background: rgba(58, 14, 24, .96);
+      box-shadow: 0 0 16px rgba(255, 107, 129, .45);
+    }
+
+    /* ===== 局外强化分类单选 ===== */
+    .segrow {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 22px auto 0;
+    }
+
+    .segbtn {
+      font: inherit;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: #93a3b8;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .1);
+      transition: color .18s, border-color .18s, background .18s, box-shadow .18s;
+    }
+
+    .segbtn:hover {
+      color: #d8e4f2;
+      border-color: rgba(255, 255, 255, .2);
+    }
+
+    .segbtn.on {
+      color: var(--c, #4fc3ff);
+      border-color: var(--c, #4fc3ff);
+      background: color-mix(in srgb, var(--c, #4fc3ff) 14%, transparent);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--c, #4fc3ff) 30%, transparent);
+    }
+
+    /* ===== 图鉴 ===== */
+    .codex {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .cxrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .035);
+      border: 1px solid rgba(255, 255, 255, .07);
+    }
+
+    .cxrow .ico {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid;
+      display: grid;
+      place-items: center;
+    }
+
+    .cxrow .ico svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .cxrow .cxt {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .cxrow .cxt b {
+      display: block;
+      font-size: 13.5px;
+      letter-spacing: .6px;
+    }
+
+    .cxrow .cxt span {
+      display: block;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: #8a9ab0;
+      margin-top: 2px;
+    }
+
+    .cxrow > em {
+      flex: 0 0 auto;
+      font-style: normal;
+      font-size: 11px;
+      color: #7f90a6;
+      letter-spacing: .5px;
+      white-space: nowrap;
+    }
+
+    /* ===== 成就 ===== */
+    .achbox {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 18px;
+      margin-top: 18px;
+      max-width: 880px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .achgrp h2 {
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .achgrp h2 em {
+      font-style: normal;
+      font-size: 11px;
+      color: #7f90a6;
+      letter-spacing: .5px;
+    }
+
+    .achgrp h2::after {
+      content: "";
+      flex: 1 1 auto;
+      height: 1px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--c, #4fc3ff) 45%, transparent), transparent);
+    }
+
+    .achrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .07);
+    }
+
+    .achrow.ok {
+      border-color: color-mix(in srgb, var(--c, #4fc3ff) 55%, transparent);
+      background: color-mix(in srgb, var(--c, #4fc3ff) 9%, transparent);
+    }
+
+    .achrow.done {
+      opacity: .55;
+    }
+
+    .achrow .aht {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .achrow .aht b {
+      display: block;
+      font-size: 13px;
+      letter-spacing: .6px;
+      color: #dbe6f4;
+    }
+
+    .achrow .aht span {
+      display: block;
+      font-size: 11.5px;
+      color: #8a9ab0;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .ahbar {
+      display: block;
+      height: 3px;
+      margin-top: 7px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .09);
+      overflow: hidden;
+    }
+
+    .ahbar u {
+      display: block;
+      height: 100%;
+      border-radius: 2px;
+      background: var(--c, #4fc3ff);
+      opacity: .8;
+    }
+
+    .mbtn.tiny {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 92px;
+      font-size: 11.5px;
+      padding: 8px 12px;
+      letter-spacing: .5px;
+    }
+
+    .mbtn.tiny.hot {
+      color: #1a1206;
+      background: linear-gradient(180deg, #ffd76a, #f0b93c);
+      border-color: rgba(255, 215, 106, .9);
+      box-shadow: 0 0 16px rgba(255, 215, 106, .35);
+    }
+
+    /* ===== 标题页：地图 / 难度胶囊 ===== */
+    .maps {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .maps.dimg { margin-top: 10px; }
+
+    .cap {
+      --c: #4fc3ff;
+      min-width: 92px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(16, 26, 46, .72);
+      color: #cfe4ff;
+      font: 600 13px/1.2 var(--font);
+      letter-spacing: .6px;
+      cursor: pointer;
+      transition: .18s;
+    }
+
+    .cap:hover:not(:disabled) { border-color: color-mix(in srgb, var(--c) 60%, transparent); color: #fff; }
+
+    .cap.on {
+      color: #fff;
+      border-color: color-mix(in srgb, var(--c) 75%, transparent);
+      background: color-mix(in srgb, var(--c) 30%, rgba(10, 16, 30, .9));
+      box-shadow: 0 0 16px color-mix(in srgb, var(--c) 40%, transparent);
+    }
+
+    .cap.lock { opacity: .45; color: #9aa8bd; }
+
+    .mapds {
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: .4px;
+      color: #7c8ca6;
+      text-align: center;
+    }
+
+    /* ===== 标题页右下角入口（固定贴底，在 #hint 之上） ===== */
+    .ticons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    /* 标题页专用：脱离文档流贴底，不随内容滚动 / 缩放 */
+    #overlay.ttl .ticons {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 40px;
+      margin: 0;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    #overlay.ttl .ticons .ticon {
+      pointer-events: auto;
+    }
+
+    .ticon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: #93a3b8;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .1);
+      transition: color .18s, border-color .18s, background .18s, transform .18s;
+    }
+
+    .ticon svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .ticon:hover {
+      color: #d8e4f2;
+      border-color: rgba(255, 255, 255, .22);
+      background: rgba(255, 255, 255, .07);
+      transform: translateY(-1px);
+    }
+
+    /* ===== 局外强化网格 ===== */    .shop {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .mcard {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      padding: 17px 12px 14px;
+      border-radius: 14px;
+      background: rgba(16, 28, 48, .8);
+      border: 1px solid rgba(90, 150, 220, .24);
+      transition: border-color .15s, transform .15s, background .15s;
+    }
+
+    .mcard:hover {
+      border-color: rgba(120, 200, 255, .5);
+      background: rgba(22, 40, 66, .86);
+      transform: translateY(-2px);
+    }
+
+    .mcard.maxed {
+      opacity: .46;
+    }
+
+    .mcard .ico {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+    }
+
+    .mcard .ico svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .mcard .mn {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #dff2ff;
+    }
+
+    .mcard .md {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #7d95ad;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .pips {
+      display: flex;
+      gap: 5px;
+      margin: -1px 0 2px;
+    }
+
+    /* 暂停页设置列表 */
+    .setlist {
+      margin: 4px auto 30px;
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .setrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-radius: 12px;
+      background: rgba(20, 36, 58, .62);
+      border: 1px solid rgba(110, 170, 230, .18);
+      color: #cfe3f7;
+      font-size: 13.5px;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color .15s, background .15s;
+    }
+
+    .setrow:hover {
+      border-color: rgba(120, 200, 255, .42);
+    }
+
+    .setrow .sw {
+      position: relative;
+      flex: 0 0 auto;
+      width: 42px;
+      height: 23px;
+      border-radius: 12px;
+      background: rgba(96, 124, 158, .38);
+      transition: background .16s;
+    }
+
+    .setrow .sw::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #93a9bf;
+      transition: left .16s, background .16s;
+    }
+
+    .setrow.on .sw {
+      background: rgba(52, 146, 240, .72);
+    }
+
+    .setrow.on .sw::after {
+      left: 22px;
+      background: #eaf6ff;
+    }
+
+    /* 音量滑杆：不显示默认轨道，换成和面板一致的游戏风细轨 */
+    .setrow.vol {
+      cursor: default;
+      gap: 12px;
+    }
+
+    .setrow.vol input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1 1 auto;
+      min-width: 90px;
+      max-width: 150px;
+      height: 4px;
+      border-radius: 3px;
+      background: rgba(96, 124, 158, .48);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .setrow.vol input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #eaf6ff;
+      border: 2px solid #4fa8f0;
+      box-shadow: 0 0 8px rgba(90, 190, 255, .7);
+      cursor: pointer;
+    }
+
+    .setrow.vol input[type="range"]::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #eaf6ff;
+      border: 2px solid #4fa8f0;
+      cursor: pointer;
+    }
+
+    /* 宝箱页：进化条件提示 */
+    .evohint {
+      margin: 16px auto 0;
+      max-width: 640px;
+      text-align: center;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: #ffb27d;
+    }
+
+    .pickc .evoNeed {
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: #8be0a8;
+      letter-spacing: .5px;
+    }
+
+    /* 被动卡上的「X族武器进化前置条件」提示（颜色由族色内联给出） */
+    .pickc .evoFam {
+      margin-top: 8px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      letter-spacing: .5px;
+    }
+
+    .linkbtn {
+      margin: 18px auto 0;
+      display: block;
+      padding: 6px 10px;
+      background: none;
+      border: 0;
+      color: #7d95ad;
+      font: inherit;
+      font-size: 12.5px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .linkbtn:hover {
+      color: #a9cbe6;
+    }
+
+    .pips i {
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+      background: rgba(120, 160, 200, .22);
+    }
+
+    .pips i.on {
+      background: #6cd6ff;
+      box-shadow: 0 0 8px rgba(108, 214, 255, .85);
+    }
+
+    .mcard .mbtn {
+      width: 100%;
+      min-height: 40px;
+      margin: 0;
+      padding: 9px 6px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      border-radius: 10px;
+    }
+
+    /* ===== 标题页 ===== */
+    /* 标题页：主界面默认不滚动，内容按视口高度收紧 */
+    #overlay.ttl #panel {
+      overflow: hidden;
+      /* 底部留白：图标行的具体避让由 ui.js 的 fitTitle() 按视口算 */
+      padding-bottom: 34px;
+    }
+
+    /* 标题页缩放由 ui.js 的 fitTitle() 按可用高度算，这里只保留间距压缩 */
+    @media (max-height: 940px) {
+      .titlebox {
+        padding: 0 0 2px;
+      }
+
+      .titlebox .sub {
+        margin-bottom: 26px !important;
+      }
+
+      .titlebox .stats {
+        margin: 0 0 16px;
+      }
+
+      .titlebox .chars {
+        margin-bottom: 0;
+      }
+
+      .maps {
+        margin-top: 12px;
+      }
+
+      .maps.dimg {
+        margin-top: 8px;
+      }
+
+      .mapds {
+        margin-top: 8px;
+      }
+
+      .titlebox > .mbtn {
+        margin-top: 20px;
+      }
+
+      .ticons {
+        margin-top: 14px;
+      }
+    }
+
+    @media (max-height: 760px) {
+      .titlebox h1 {
+        margin: 2px 0 8px;
+      }
+
+      .titlebox .sub {
+        margin-bottom: 16px !important;
+      }
+
+      .stats {
+        gap: 26px;
+      }
+
+      .titlebox .stats b {
+        font-size: 16px;
+      }
+
+      .titlebox > .mbtn {
+        margin-top: 14px;
+        min-height: 44px;
+        padding: 10px 18px;
+      }
+
+      .ticon {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (max-height: 700px) {
+      /* 太矮时底部操作提示会和图标行打架，直接收起 */
+      #hint {
+        display: none !important;
+      }
+
+      /* 提示条没了，图标行可以再往下贴 */
+      #overlay.ttl .ticons {
+        bottom: 18px;
+      }
+    }
+
+    /* 标题页主体 */
+    .titlebox {
+      padding: 10px 0 4px;
+    }
+
+    .titlebox h1 {
+      margin: 6px 0 16px;
+    }
+
+    .titlebox .sub {
+      margin-bottom: 48px !important;
+    }
+
+    .titlebox .chars {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .titlebox .stats {
+      margin: 0 0 28px;
+    }
+
+    .titlebox > .mbtn {
+      margin-top: 32px;
+    }
+
+    .titlebox > .mbtn + .mbtn {
+      margin-top: 14px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 44px;
+      margin: 26px 0 6px;
+      flex-wrap: wrap;
+    }
+
+    .stats div {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 132px;
+    }
+
+    .stats span {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #6d86a0;
+    }
+
+    .stats b {
+      font-size: 17px;
+      color: #ffd76a;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    #dashBtn {
+      display: none;
+    }
+
+    body.touch #dashBtn {
+      display: grid;
+      position: fixed;
+      right: 22px;
+      bottom: 104px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid rgba(130, 200, 255, .4);
+      background: rgba(20, 40, 70, .55);
+      color: #8fe3ff;
+      font-size: 24px;
+      place-items: center;
+      z-index: 12;
+      touch-action: none;
+    }
+
+    body.touch #dashBtn:active {
+      background: rgba(60, 140, 220, .55);
+    }
+
+    /* ===== GM 调试（左下角） ===== */
+    #gmBtn {
+      display: none;
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 41;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid rgba(140, 220, 180, .45);
+      background: rgba(14, 30, 24, .82);
+      color: #8ef0b8;
+      font: 800 13px/1 ui-monospace, Menlo, Consolas, monospace;
+      letter-spacing: .5px;
+      cursor: pointer;
+      place-items: center;
+      backdrop-filter: blur(3px);
+    }
+
+    body.gm-on #gmBtn {
+      display: grid;
+    }
+
+    /* 面板展开时让出左侧武器/技能/被动列 */
+    body.gm-open #hudW {
+      display: none;
+    }
+
+    #gmBtn:active {
+      background: rgba(30, 70, 54, .95);
+    }
+
+    body.touch #gmBtn {
+      bottom: 148px;
+    }
+
+    #gmPanel {
+      display: none;
+      position: fixed;
+      left: 12px;
+      bottom: 68px;
+      z-index: 40;
+      width: 322px;
+      max-width: calc(100vw - 24px);
+      max-height: min(74vh, 620px);
+      overflow: hidden;
+      flex-direction: column;
+      border-radius: 14px;
+      border: 1px solid rgba(120, 180, 240, .22);
+      background: linear-gradient(180deg, rgba(10, 20, 34, .97), rgba(6, 12, 22, .98));
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .6);
+      font: 12px/1.5 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: #cfe0f2;
+    }
+
+    #gmPanel.on {
+      display: flex;
+    }
+
+    body.touch #gmPanel {
+      bottom: 204px;
+    }
+
+    #gmPanel .gm-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(120, 180, 240, .16);
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #8ef0b8;
+    }
+
+    /* 右侧固定的玩家属性表（不跟面板一起滚动） */
+    #gmStats {
+      display: none;
+      position: fixed;
+      left: 346px;
+      bottom: 68px;
+      z-index: 39;
+      width: 246px;
+      max-height: min(80vh, 700px);
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 10px 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(120, 180, 240, .22);
+      background: linear-gradient(180deg, rgba(10, 20, 34, .97), rgba(6, 12, 22, .98));
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .6);
+      font: 12px/1.5 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: #cfe0f2;
+    }
+
+    #gmStats.on {
+      display: block;
+    }
+
+    #gmStats .gs-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #8fe3ff;
+    }
+
+    #gmStats .gs-head button {
+      padding: 3px 8px;
+      border-radius: 7px;
+      border: 1px solid rgba(120, 180, 240, .28);
+      background: rgba(24, 38, 58, .92);
+      color: #cfe0f2;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    #gmStats .gs-head button:hover {
+      background: rgba(40, 66, 100, .95);
+    }
+
+    @media (max-width: 720px) {
+      #gmStats {
+        left: auto;
+        right: 12px;
+        width: 190px;
+        bottom: 68px;
+      }
+
+      .codex,
+      .achbox {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    body.touch #gmStats {
+      bottom: 204px;
+    }
+
+    #gmPanel .gm-head button {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 1px solid rgba(120, 180, 240, .22);
+      background: rgba(20, 34, 52, .9);
+      color: #a9c8e4;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    #gmPanel .gm-body {
+      padding: 6px 12px 14px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #2f6b52 transparent;
+    }
+
+    #gmPanel .gm-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #gmPanel .gm-body::-webkit-scrollbar-thumb {
+      border-radius: 6px;
+      background: linear-gradient(180deg, #4fd39b, #2a7f5e);
+    }
+
+    #gmPanel h4 {
+      margin: 12px 0 7px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(120, 180, 240, .1);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .6px;
+      color: #7fd4ff;
+    }
+
+    #gmPanel h4:first-child {
+      margin-top: 4px;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    #gmPanel .gm-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    #gmPanel .gm-nm {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 3px 0 4px;
+      font-size: 11.5px;
+      color: #9fb6cc;
+    }
+
+    #gmPanel .gm-nm b {
+      color: #ffd76a;
+      font-weight: 700;
+    }
+
+    /* 玩家属性汇总：两列对齐的小表 */
+    #gmPanel .gm-stats {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3px 10px;
+      padding: 6px 8px;
+      margin: 4px 0 6px;
+      border-radius: 8px;
+      background: rgba(12, 20, 32, .72);
+      border: 1px solid rgba(120, 180, 240, .14);
+    }
+
+    #gmPanel .gm-stat {
+      display: contents;
+    }
+
+    #gmPanel .gm-stat span {
+      font-size: 11px;
+      color: #9fb6cc;
+    }
+
+    #gmPanel .gm-stat b {
+      font-size: 11px;
+      color: #8fe3ff;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    #gmPanel .gm-pill {
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(120, 180, 240, .22);
+      background: rgba(24, 38, 58, .92);
+      color: #cfe0f2;
+      font-size: 11.5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #gmPanel .gm-pill:hover {
+      border-color: rgba(140, 220, 180, .55);
+      color: #fff;
+    }
+
+    #gmPanel .gm-pill.on {
+      background: linear-gradient(180deg, rgba(60, 200, 140, .9), rgba(30, 130, 92, .95));
+      border-color: rgba(140, 240, 190, .8);
+      color: #04170e;
+      font-weight: 800;
+    }
+
+    /* PC 高度足够：隐藏滚动条，只保留滚轮 */
+    @media (min-width: 640px) {
+      #panel {
+        scrollbar-width: none;
+      }
+
+      #panel::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+    }
+
+    @media (max-width:560px) {
+      /* 地图 / 难度各 4 个胶囊：窄屏排成 2×2，避免最后一颗单独折到第二行 */
+      .maps,
+      .maps.dimg {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .maps .cap {
+        min-width: 0;
+        padding: 9px 8px;
+        font-size: 12.5px;
+      }
+
+      #hudL {
+        top: 8px;
+        left: 8px;
+        width: 236px;
+        padding: 8px 10px;
+        gap: 6px;
+        border-radius: 10px;
+      }
+
+      #hudL .hrow {
+        font-size: 10px;
+        gap: 7px;
+      }
+
+      #hudL .hrow > span {
+        width: 22px;
+      }
+
+      #hudL .track {
+        min-width: 0;
+        height: 7px;
+      }
+
+      #hudL .hrow > b {
+        min-width: 50px;
+        font-size: 10px;
+      }
+
+      #hudT #timer {
+        font-size: 21px;
+        letter-spacing: 2px;
+      }
+
+      #stageTxt {
+        font-size: 9px;
+        letter-spacing: 2px;
+      }
+
+      #hudW {
+        left: 8px;
+        top: 136px;
+        gap: 5px;
+      }
+
+      #hudW .lt {
+        font-size: 10px;
+      }
+
+      #wpnbar div {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+
+      #wpnbar div svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      #pasbar div {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+      }
+
+      #pasbar div svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      #minimap {
+        top: 46px;
+        right: 8px;
+        width: 66px;
+        height: 66px;
+      }
+
+      #mm {
+        width: 66px;
+        height: 66px;
+      }
+
+      #hudBR {
+        right: 8px;
+        bottom: 8px;
+        gap: 4px;
+      }
+
+      #hudBR .brrow b {
+        font-size: 14px;
+      }
+
+      #hudBR .brrow {
+        font-size: 10px;
+      }
+
+      #panel {
+        padding: 2px 4px 14px;
+      }
+
+      #panel h1 {
+        font-size: 25px;
+        letter-spacing: 6px;
+        margin: 6px 0 10px;
+      }
+
+      .chars {
+        gap: 8px;
+        margin: 16px 0 2px;
+      }
+
+      .char {
+        padding: 14px 8px 12px;
+      }
+
+      .char .ci svg {
+        width: 27px;
+        height: 27px;
+      }
+
+      .char .cn {
+        font-size: 13px;
+        margin-top: 9px;
+      }
+
+      .char .cd {
+        font-size: 11px;
+        min-height: 48px;
+      }
+
+      .char .cc {
+        font-size: 12px;
+        margin-top: 8px;
+      }
+
+      .shop {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      /* 窄屏：三张卡竖向排列但整屏可见，不靠滚动对比 */
+      #overlay.pick .picks {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      #overlay.pick .picks > .pickc {
+        max-width: none;
+        flex: none;
+      }
+
+      #overlay.pick .picks.four {
+        grid-template-columns: 1fr;
+        max-width: none;
+      }
+
+      .pickc {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        grid-template-areas:
+          "ico stat"
+          "ico pn"
+          "ico pt"
+          "pd pd"
+          "pips pips";
+        align-items: center;
+        column-gap: 12px;
+        row-gap: 0;
+        padding: 11px 14px 12px;
+        border-radius: 13px;
+        text-align: left;
+      }
+
+      .pickc .ico {
+        grid-area: ico;
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        margin: 0;
+        align-self: start;
+      }
+
+      .pickc .ico svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .pickc .stat {
+        grid-area: stat;
+        justify-content: flex-start;
+        gap: 1px 7px;
+        font-size: 10px;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .pickc .pn {
+        grid-area: pn;
+        font-size: 15px;
+        letter-spacing: 1px;
+        line-height: 1.35;
+      }
+
+      .pickc .pt {
+        grid-area: pt;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        margin-top: 1px;
+      }
+
+      .pickc .pd {
+        grid-area: pd;
+        min-height: 0;
+        margin: 7px 0 0;
+        font-size: 11px;
+        line-height: 1.55;
+        text-align: left;
+      }
+
+      .pickc .pips {
+        grid-area: pips;
+        justify-content: flex-start;
+        margin-top: 8px;
+        padding-top: 0;
+      }
+
+      .pickc .pips i {
+        width: 14px;
+        height: 4px;
+      }
+
+      .pickc .badge {
+        top: 8px;
+        left: auto;
+        right: 10px;
+        padding: 1px 6px;
+        font-size: 9px;
+        border-radius: 6px;
+      }
+
+      .refbtn {
+        margin-top: 14px;
+        padding: 11px 22px;
+        font-size: 13px;
+      }
+
+      #coinChip {
+        top: 8px;
+        right: 10px;
+        padding: 7px 12px;
+        font-size: 11.5px;
+      }
+
+      #coinChip b {
+        font-size: 13.5px;
+      }
+
+      #overlay.shop #panel {
+        padding-top: 38px;
+      }
+
+      #hint {
+        bottom: 28px;
+        font-size: 11.5px;
+        letter-spacing: .5px;
+        padding: 0 12px;
+      }
+
+      #overlay.ttl #panel {
+        padding-top: 2px;
+        padding-bottom: 108px;
+      }
+
+      /* 手机端 #hint 更高（bottom 28px），图标行再抬一点 */
+      #overlay.ttl .ticons {
+        bottom: 60px;
+      }
+
+      .mcard {
+        padding: 13px 9px 11px;
+        gap: 7px;
+      }
+
+      .mcard .ico {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+      }
+
+      .mcard .ico svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .mcard .md {
+        font-size: 11px;
+        min-height: 32px;
+      }
+
+      .stats {
+        gap: 26px;
+        margin: 18px 0 4px;
+      }
+
+      .stats b {
+        font-size: 15px;
+      }
+
+      .mbtn {
+        min-height: 50px;
+        font-size: 15px;
+        letter-spacing: 3px;
+      }
+
+      #hudT {
+        top: 86px;
+      }
+
+      #hudT #timer {
+        font-size: 21px;
+        letter-spacing: 2px;
+      }
+
+      #stageTxt {
+        font-size: 9px;
+        letter-spacing: 2px;
+      }
+
+      #bossWrap {
+        top: 126px;
+        width: 76vw;
+      }
+    }
+
+
+
+
+

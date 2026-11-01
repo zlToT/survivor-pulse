@@ -1,0 +1,16 @@
+{
+  "name": "survivor-pulse",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:single": "vite build --minify false --outDir dist-single-build && node scripts/build-single.mjs",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
+
